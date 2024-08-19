@@ -1,4 +1,4 @@
 const App = () => {
-  return <div>Movie App</div>;
+  return <div className="font-bold text-lg">Movie App</div>;
 };
 export default App;
