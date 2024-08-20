@@ -9,6 +9,9 @@ import { useEffect, useState } from "react";
 const FeatureMovie = () => {
   const [movies, setMovies] = useState([]);
 
+  // để slide hoạt động cần phải có 1 state để lưu trữ vị trí của slide hiện tại
+  const [activeMovieId, setActiveMovieId] = useState(); // lý do không gán giá trị mặc định - vì movies lần đầu tiên nó 1 mảng rỗng - cho nên ko biết activeMovieId là cái nào cho nên để undefinded
+
   // xử lý
   useEffect(() => {
     fetch("https://api.themoviedb.org/3/movie/popular", {
@@ -23,47 +26,44 @@ const FeatureMovie = () => {
       const popularMovies = data.results.splice(0, 4); // bắt đầu vị trí thứ 0 - lấy ra 4 item - 0 1 2 3 đủ rồi cắt
       // setMovies(data.results);
       setMovies(popularMovies);
+      setActiveMovieId(popularMovies[0].id); // lúc này có dữ liêu nên có thể set cho cái activeMovieId
     });
   }, []);
 
-  console.log(movies);
+  // console.log(movies);
 
   return (
     <div className="relative text-white">
-      {movies.map((movie) => (
-        <Movie key={movie.id} data={movie} />
-      ))}
+      {movies
+        .filter((movie) => movie.id === activeMovieId)
+        .map((movie) => (
+          <Movie key={movie.id} data={movie} />
+        ))}
       {/* <Movie data={movies[0]} /> */}
-      <PaginateIndicator />
+      <PaginateIndicator
+        movies={movies}
+        activeMovieId={activeMovieId}
+        setActiveMovieId={setActiveMovieId}
+      />
     </div>
   );
 };
 export default FeatureMovie;
 
 /*
-  Xử lý vòng lặp vô tận khi gọi API - đó là ta sẽ nhét đoạn call api vào bên trong useEffect
+  slide có ý nghĩa như sau:
 
-  tức là ta đang thông báo cho React biết rằng đoạn code call api này là 1 side Effect và nó sẽ thực hiện sau khi component này được render
+  Đầu tiên tạo ra const [activeMovieId, setActiveMovieId] = useState(); mục đích lưu id của movie đó sau này để slide
 
-  [] của useEffect là 1 dependencies array
+  khi có dữ liệu trả về db setActiveMovieId để set id đầu tiên lấy về vào
 
-  Giải thích code:
+  trước khi map phải filter để lấy ra movie duy nhất có id trùng với activeMovieId, sau đó tiến hành map nó ra để hiển thị
 
-  Nó sẽ chạy từ trên xuống dưới
+  {movies
+        .filter((movie) => movie.id === activeMovieId)
+        .map((movie) => (
+          <Movie key={movie.id} data={movie} />
+        ))}
 
-  ban đầu movies sẽ được tạo ra là rỗng - kèm đó 1 hàm để setMovies
-
-  sau đó đi đến useEffects thì React sẽ lý đoạn code bên trong đó - hay chính là thàm số đầu tiên - callbacks - sau đó di chuyển tiếp xuống
-
-  sau khi tới đây setMovies(data.results) tạo trigger làm component re-render chạy lại toàn bộ đoạn code ở trong component
-
-  Và lúc này ở lần render thứ 2 thì movies đã có dữ liệu - 1 array có 20 phần tử
-
-  chạy tiếp đến useEffect và nó sẽ kiểm tra tham số thứ 2 của useEffect thay vì tham số thứ 1 và tham số thứ 2 hiện tai là 1 dependencies array
- và nó đang là dữ liệu rỗng. Thì nó sẽ không thực thi lại cái callbacks - hay không thực thi lại function ở tham số thứ 1 giúp tránh rơi vào vòng lập vô tận
-  
-
-  Chú ý sử sụng useEFfect nên có dependencies array - vì không có thì tham số thứ 1 useEffect luôn luôn thực thi
-
-  Khi render hay function component đó được thực thi thì khi gặp useEffect react sẽ ko thực thi function trong tham số thứ 1 ngay mà sẽ return về đoạn code jsx, sau khi render xong react mới thực thi function ở trong useeffect 
+  tiếp theo PaginateIndicator mình sẽ dựa vào movies để map nó ra tương ứng với số lượng slide
 */
