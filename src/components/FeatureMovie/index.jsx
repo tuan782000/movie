@@ -11,7 +11,7 @@ const FeatureMovie = () => {
 
   // xử lý
   useEffect(() => {
-    fetch("https://api.themoviedb.org/3/person/popular", {
+    fetch("https://api.themoviedb.org/3/movie/popular", {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -20,7 +20,9 @@ const FeatureMovie = () => {
       },
     }).then(async (res) => {
       const data = await res.json();
-      setMovies(data.results);
+      const popularMovies = data.results.splice(0, 4); // bắt đầu vị trí thứ 0 - lấy ra 4 item - 0 1 2 3 đủ rồi cắt
+      // setMovies(data.results);
+      setMovies(popularMovies);
     });
   }, []);
 
@@ -28,7 +30,10 @@ const FeatureMovie = () => {
 
   return (
     <div className="relative text-white">
-      <Movie />
+      {movies.map((movie) => (
+        <Movie key={movie.id} data={movie} />
+      ))}
+      {/* <Movie data={movies[0]} /> */}
       <PaginateIndicator />
     </div>
   );
@@ -59,4 +64,6 @@ export default FeatureMovie;
   
 
   Chú ý sử sụng useEFfect nên có dependencies array - vì không có thì tham số thứ 1 useEffect luôn luôn thực thi
+
+  Khi render hay function component đó được thực thi thì khi gặp useEffect react sẽ ko thực thi function trong tham số thứ 1 ngay mà sẽ return về đoạn code jsx, sau khi render xong react mới thực thi function ở trong useeffect 
 */
