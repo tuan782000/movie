@@ -1,11 +1,13 @@
 import Header from "./components/Header";
 import FeatureMovie from "./components/FeatureMovie";
+import MediaList from "./components/MediaList";
 
 const App = () => {
   return (
     <div>
       <Header />
       <FeatureMovie />
+      <MediaList />
     </div>
   );
 };
