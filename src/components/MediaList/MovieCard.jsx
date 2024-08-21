@@ -5,7 +5,7 @@ const MovieCard = (props) => {
   return (
     <div className="relative rounded-lg border border-slate-800">
       {mediaType === "tv" && (
-        <p className="absolute right-1 top-1 rounded bg-black text-sm font-bold text-white shadow-md">
+        <p className="absolute right-1 top-1 rounded bg-black px-1 py-0.5 text-sm font-bold text-white shadow-md">
           TV Show
         </p>
       )}

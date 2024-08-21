@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react";
 import MovieCard from "./MovieCard";
 
+const TABS = [
+  {
+    id: "all",
+    name: "All",
+  },
+  {
+    id: "movie",
+    name: "Movie",
+  },
+  {
+    id: "tv",
+    name: "Tv Show",
+  },
+];
+
 const MediaList = () => {
   const [mediaList, setMediaList] = useState([]);
+  // muốn nhấn vào các cái tab thì api sẽ lấy ra dữ liệu khác nhau ví dụ từ all sang TV show - sang Movie
+  // cách giải quyết là mình dùng state để lưu trạng thái của tab
+  // const [activeTabId, setActiveTabId] = useState("all");
+  const [activeTabId, setActiveTabId] = useState(TABS[0].id); // nâng cấp lên - như cú pháp cũ ở trên
+  // dựa vào activeTabId thay thế cho string trong api
 
+  // VIỆC CHẠY LẦN ĐẦU NÓ SẼ CHẠY CALLBACK TRƯỚC
+  // Ở LẦN TIẾP THEO NÓ SẼ XEM THAM SỐ THỨ 2 TRƯỚC SAU ĐÓ MỚI CHẠY CALLBACK "THAM SỐ THỨ 1"
+  // VIỆC ĐỂ [activeTabId] NÀY GIÚP KHI activeTabId THAY ĐỔI THÌ TẠO TRIGGER GỌI GIÚP CHẠY LẠI USEEFFECT
   useEffect(() => {
-    fetch("https://api.themoviedb.org/3/trending/all/day", {
+    // khi bạn sử dụng 1 biến bên ngoài useEffect cụ thể activeTabId thì dependencies sẽ cảnh báo - buộc bạn phải bỏ biến đó vào dependencies
+    fetch(`https://api.themoviedb.org/3/trending/${activeTabId}/day`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -18,17 +42,27 @@ const MediaList = () => {
       const trendingMediaList = data.results.splice(0, 12);
       setMediaList(trendingMediaList);
     });
-  }, []);
+  }, [activeTabId]);
+  // Nếu không có activeTabId thì useEffect sẽ [] rỗng và chạy 1 lần duy nhất - điều này chứng tỏ nếu [] thì không tạo trigger để chạy callback của useEffect ở lần render tiếp theo - không bao giờ chạy lần 2 - nhưng nếu có activeTabId thì nó sẽ có chạy lần 2 - n lần nếu như activeTabId có sự thay đổi.
   return (
     <div className="bg-black px-8 py-10 text-[1.2vw] text-white">
       <div className="mb-6 flex items-center gap-4">
         <p className="text-[2vw] font-bold">Trending</p>
         <ul className="flex rounded border border-white">
-          <li className="cursor-pointer rounded bg-white px-2 py-1 text-black">
+          {TABS.map((tab) => (
+            <li
+              key={tab.id}
+              className={`cursor-pointer rounded px-2 py-1 ${activeTabId === tab.id ? "bg-white text-black" : ""}`}
+              onClick={() => setActiveTabId(tab.id)}
+            >
+              {tab.name}
+            </li>
+          ))}
+          {/* <li className="cursor-pointer rounded bg-white px-2 py-1 text-black">
             All
           </li>
           <li className="cursor-pointer rounded px-2 py-1">Movie</li>
-          <li className="cursor-pointer rounded px-2 py-1">Tv Show</li>
+          <li className="cursor-pointer rounded px-2 py-1">Tv Show</li> */}
         </ul>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
@@ -55,18 +89,15 @@ const MediaList = () => {
 export default MediaList;
 
 /*
-div tổng px-8 py-10 text-[1.2vw] bg-black text-white: padding trái phải 32px - py: padding top padding bottom 40px - font-size: 1.2vw; so với view width của màn hình - có background màu đen và chữ sẽ là màu trắng
+Logic call api
 
-div tương trưng cho header - mb-6 flex items-center gap-4 - Xác định lại trục chính sẽ là x ngàng - và trục phụ sẽ là y "đối với thuộc tính flex". Sau đó items-center là giúp canh cho trục phụ truc y trục dọc hiện tại canh mọi thứ nằm giữa "trên - dưới". gap-4: khoảng cách giữa các item sẽ là 16px. Trong này tạm thời có 2 item khoảng cách từ item này đến item kia là 16 - mb-6 cách nội dung bên dưới 24px
+khi người dùng nhấn vào tab trên giao diện
 
-text-[2vw] font-bold: làm cho chữ có font-size tương ứng font-size: 2vw; và in đậm
+- 3 cái tab được render từ TABS và có id tương ứng 1 phần trong api và value tương ứng phần hiển thị cho người dùng
+- trong mỗi cái li có gắn sự kiện onClick mỗi onClick sẽ setActiveTabId 1 cái giá trị mới dựa vào id của mỗi tab
+- lúc này activeTabId thay đổi thì component sẽ tạo ra trigger giúp re-render - mà useEFfect có theo dõi activeTabId cho nên useEFfect cũng được chạy lại hàm callback với cái giá trị activeTabId mới lúc này sẽ load lại mediaList
 
-flex rounded border border-white: mọi item bên trong nằm trên 1 hàng - bo góc - có border - màu border màu trắng
-
-cursor-pointer rounded bg-white px-2 py-1 text-black - cho mọi người hover vào người dùng biết có thể nhấn được- bo góc màu trắng backgroudn cũng mày trắng padding trái phải 8px padding trên dưới 4px chữ màu đen
-
-cursor-pointer rounded px-2 py-1 chuột hình bàn tay khi hover vào bo góc và cách nội dung ngang 8px các trên dưới 4px
-
-grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6: gird là tổ chức theo dạng lưới - ở màn hình mobile hiện 2 card - trên màn hình tablet hiện 4 card còn lại 6 card
+- mediaList lấy ra 20 cái đang hot nhất
+- chuyển xuống MovieCard và CircularProgressBar xử lý hiển thị
 
 */
