@@ -1,13 +1,15 @@
 import Header from "./components/Header";
 import FeatureMovie from "./components/FeatureMovie";
 import MediaList from "./components/MediaList";
+import { TOP_RATED_TABS, TRENDING_TABS } from "./libs/constant";
 
 const App = () => {
   return (
     <div>
       <Header />
       <FeatureMovie />
-      <MediaList />
+      <MediaList title={"Trending"} tabs={TRENDING_TABS} />
+      <MediaList title={"Top Rated"} tabs={TOP_RATED_TABS} />
     </div>
   );
 };
