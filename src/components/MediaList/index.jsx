@@ -1,6 +1,24 @@
+import { useEffect, useState } from "react";
 import MovieCard from "./MovieCard";
 
 const MediaList = () => {
+  const [mediaList, setMediaList] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.themoviedb.org/3/trending/all/day", {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
+      },
+    }).then(async (res) => {
+      const data = await res.json();
+      console.log({ data });
+      const trendingMediaList = data.results.splice(0, 12);
+      setMediaList(trendingMediaList);
+    });
+  }, []);
   return (
     <div className="bg-black px-8 py-10 text-[1.2vw] text-white">
       <div className="mb-6 flex items-center gap-4">
@@ -14,12 +32,22 @@ const MediaList = () => {
         </ul>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
+        {mediaList.map((media) => (
+          <MovieCard
+            key={media.id}
+            title={media.title || media.name}
+            releaseDate={media.release_date || media.first_air_date}
+            poster={media.poster_path}
+            point={media.vote_average}
+            mediaType={media.media_type}
+          />
+        ))}
+        {/* <MovieCard />
         <MovieCard />
         <MovieCard />
         <MovieCard />
         <MovieCard />
-        <MovieCard />
-        <MovieCard />
+        <MovieCard /> */}
       </div>
     </div>
   );
