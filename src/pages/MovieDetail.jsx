@@ -5,13 +5,18 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import _ from "lodash";
+import Loading from "../components/Loading";
 
 const MovieDetail = () => {
   const { id } = useParams(); // sử dụng destructuring để lấy ra id
   const [movieInfo, setMovieInfo] = useState({}); // mặc định là 1 empty object - khi có dữ liệu sẽ set lại object mới
 
+  // khi mà loading dữ liệu ta cần phải có 1 state để lưu trữ trạng thái Loading
+  const [isLoading, setIsLoading] = useState(false);
+
   // sử dụng 1 id ở phía bên ngoài useEffect - thì phải bổ sung vào dependencies
   useEffect(() => {
+    setIsLoading(true);
     // https://api.themoviedb.org/3/movie/{movie_id}
     fetch(
       `https://api.themoviedb.org/3/movie/${id}?append_to_response=release_dates,credits`,
@@ -23,11 +28,18 @@ const MovieDetail = () => {
             "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
         },
       },
-    ).then(async (res) => {
-      const data = await res.json();
-      console.log({ data });
-      setMovieInfo(data);
-    });
+    )
+      .then(async (res) => {
+        const data = await res.json();
+        console.log({ data });
+        setMovieInfo(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [id]);
   // sau khi lấy xong dữ liệu api ta phải nghĩ ngay đến việc lưu trữ đống dữ liệu đó vào 1 state
 
@@ -62,6 +74,10 @@ const MovieDetail = () => {
   const groupedCrews = _.groupBy(crews, "job");
   console.log({ crews, groupedCrews });
   // groupedCrews: nó sẽ lấy job làm key
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="relative overflow-hidden text-white">
