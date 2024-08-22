@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     element: <HomePage />,
   },
   {
-    path: "/movie",
+    path: "/movie/:id",
     element: <MovieDetail />,
   },
 ]);
@@ -28,3 +28,9 @@ createRoot(document.getElementById("root")).render(
     {/* <App /> */}
   </StrictMode>,
 );
+
+// Bây giờ là mỗi cái movie muốn nhấn vào thì router phải di chuyển kèm id
+// muốn truy xuất vào path và truyền id dynamic để thay đổi cái id
+// /movie/:id - cái :id thông báo cho router là id này dynamic
+// để lấy ra id trong react router - để lấy ra params là tham số - thì mình cần sử dụng cái Hooks useParams "để lấy ra id"
+// const params = useParams();
