@@ -117,13 +117,13 @@ const MovieDetail = () => {
               </div>
             ))}
             {/* <div>
-              <p className="font-bold">Director</p>
-              <p>Jenifer Phang</p>
-            </div>
-            <div>
-              <p className="font-bold">Writer</p>
-              <p>Dan Frey, ReuSell Sommer</p>
-            </div> */}
+          <p className="font-bold">Director</p>
+          <p>Jenifer Phang</p>
+        </div>
+        <div>
+          <p className="font-bold">Writer</p>
+          <p>Dan Frey, ReuSell Sommer</p>
+        </div> */}
           </div>
         </div>
       </div>

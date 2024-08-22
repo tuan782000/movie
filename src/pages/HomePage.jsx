@@ -1,12 +1,12 @@
-import Header from "../components/Header";
 import FeatureMovie from "../components/FeatureMovie";
 import MediaList from "../components/MediaList";
 import { TOP_RATED_TABS, TRENDING_TABS } from "../libs/constant";
 
+// không cần Header nữa phần này RootLayout lo
 const App = () => {
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <FeatureMovie />
       <MediaList title={"Trending"} tabs={TRENDING_TABS} />
       <MediaList title={"Top Rated"} tabs={TOP_RATED_TABS} />
