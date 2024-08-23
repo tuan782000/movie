@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react";
+// import { useEffect } from "react";
+// import { useState } from "react";
 import Loading from "@components/Loading";
 import Banner from "@components/MediaDetail/Banner";
 import RelatedMediaList from "@components/MediaDetail/RelatedMediaList";
@@ -11,10 +11,10 @@ import useFetch from "@hooks/useFetch";
 const MovieDetail = () => {
   const { id } = useParams();
   // const [movieInfo, setMovieInfo] = useState({});
-  const [relatedMovies, setRelatedMovies] = useState([]);
+  // const [relatedMovies, setRelatedMovies] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
-  const [isRelatedMovieListLoading, setIsRelatedMovieListLoading] =
-    useState(false);
+  // const [isRelatedMovieListLoading, setIsRelatedMovieListLoading] =
+  //   useState(false);
 
   // lúc này mình sẽ không cần state movieInfo nữa và state isLoading mình chỉ cần gán biến movieInfo vào data và sử dụng isLoading ở bên useFetch trả về là được
   const { data: movieInfo, isLoading } = useFetch({
@@ -50,35 +50,43 @@ const MovieDetail = () => {
   //     });
   // }, [id]);
 
-  useEffect(() => {
-    setIsRelatedMovieListLoading(true);
-    // https://api.themoviedb.org/3/movie/{movie_id}
-    fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        console.log({ recommandation: data });
-        // setMovieInfo(data);
-        // api trả về có results nên tham chiếu - nếu không có thì mình sẽ mặc định gán array rỗng
-        const currentRelatedMovies = (data.results || []).slice(0, 12);
+  const {
+    data: recommandationsResponse,
+    isLoading: isRelatedMovieListLoading,
+  } = useFetch({
+    url: `/movie/${id}/recommendations`,
+  });
 
-        setRelatedMovies(currentRelatedMovies);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setIsRelatedMovieListLoading(false);
-      });
-  }, [id]);
+  const relatedMovies = recommandationsResponse.results || []; // trường hợp recommandationsResponse.results không có kết quả thì gán mảng rỗng
+  // useEffect(() => {
+  //   setIsRelatedMovieListLoading(true);
+  //   // https://api.themoviedb.org/3/movie/{movie_id}
+  //   fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations`, {
+  //     method: "GET",
+  //     headers: {
+  //       accept: "application/json",
+  //       Authorization:
+  //         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
+  //     },
+  //   })
+  //     .then(async (res) => {
+  //       const data = await res.json();
+  //       console.log({ recommandation: data });
+  //       // setMovieInfo(data);
+  //       // api trả về có results nên tham chiếu - nếu không có thì mình sẽ mặc định gán array rỗng
+  //       const currentRelatedMovies = (data.results || []).slice(0, 12);
 
-  if (isLoading || isRelatedMovieListLoading) {
+  //       setRelatedMovies(currentRelatedMovies);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     })
+  //     .finally(() => {
+  //       setIsRelatedMovieListLoading(false);
+  //     });
+  // }, [id]);
+
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -90,7 +98,10 @@ const MovieDetail = () => {
           <div className="flex-[2]">
             <ActorList actors={movieInfo.credits?.cast || []} />
             {/* || [] đề phòng movieInfo.credits?.cast bị undefined thì nó sẽ thế vào là array rỗng chứ không trả về undefined */}
-            <RelatedMediaList mediaList={relatedMovies} />
+            <RelatedMediaList
+              mediaList={relatedMovies}
+              isLoading={isRelatedMovieListLoading}
+            />
           </div>
           <div className="flex-1">
             {/* <p className="mb-4 text-[1.4vw] font-bold">Information</p> */}

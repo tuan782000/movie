@@ -1,6 +1,7 @@
 import PaginateIndicator from "./PaginateIndicator";
 import Movie from "./Movie";
 import { useEffect, useState, useRef } from "react";
+import useFetch from "@hooks/useFetch";
 
 // accesstoken: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68
 
@@ -9,7 +10,7 @@ import { useEffect, useState, useRef } from "react";
 const delay = 5000;
 
 const FeatureMovie = () => {
-  const [movies, setMovies] = useState([]);
+  // const [movies, setMovies] = useState([]);
 
   // để slide hoạt động cần phải có 1 state để lưu trữ vị trí của slide hiện tại
   const [activeMovieId, setActiveMovieId] = useState(); // lý do không gán giá trị mặc định - vì movies lần đầu tiên nó 1 mảng rỗng - cho nên ko biết activeMovieId là cái nào cho nên để undefinded
@@ -22,22 +23,33 @@ const FeatureMovie = () => {
     }
   };
   // xử lý
+  // useEffect(() => {
+  //   fetch("https://api.themoviedb.org/3/movie/popular", {
+  //     method: "GET",
+  //     headers: {
+  //       accept: "application/json",
+  //       Authorization:
+  //         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
+  //     },
+  //   }).then(async (res) => {
+  //     const data = await res.json();
+  //     const popularMovies = data.results.splice(0, 4); // bắt đầu vị trí thứ 0 - lấy ra 4 item - 0 1 2 3 đủ rồi cắt
+  //     // setMovies(data.results);
+  //     setMovies(popularMovies);
+  //     setActiveMovieId(popularMovies[0].id); // lúc này có dữ liêu nên có thể set cho cái activeMovieId
+  //   });
+  // }, []);
+
+  const { data: popularMoviesResponse } = useFetch({ url: "/movie/popular" });
+
+  const movies = (popularMoviesResponse.results || []).slice(0, 4);
+
   useEffect(() => {
-    fetch("https://api.themoviedb.org/3/movie/popular", {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
-      },
-    }).then(async (res) => {
-      const data = await res.json();
-      const popularMovies = data.results.splice(0, 4); // bắt đầu vị trí thứ 0 - lấy ra 4 item - 0 1 2 3 đủ rồi cắt
-      // setMovies(data.results);
-      setMovies(popularMovies);
-      setActiveMovieId(popularMovies[0].id); // lúc này có dữ liêu nên có thể set cho cái activeMovieId
-    });
-  }, []);
+    if (movies[0]?.id) {
+      setActiveMovieId(movies[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(movies)]);
 
   useEffect(() => {
     resetTimeout();
