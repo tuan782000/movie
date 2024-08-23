@@ -21,7 +21,7 @@ const Banner = (props) => {
   console.log({ crews, groupedCrews });
 
   return (
-    <div className="relative overflow-hidden text-white">
+    <div className="relative overflow-hidden text-white shadow-sm shadow-slate-800">
       {/* Đây là background */}
       {/* inset-0: top-0 left-0 right-0 bottom-0 */}
       <img
@@ -51,7 +51,7 @@ const Banner = (props) => {
           <div className="mt-4 flex items-center gap-4">
             <div className="flex items-center gap-2">
               <CircularProgressBar
-                percent={Math.round(mediaInfo.vote_average * 10)}
+                percent={Math.round((mediaInfo.vote_average || 0) * 10)}
                 strokeWidth={0.3}
                 size={3.5}
               />
