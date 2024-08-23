@@ -6,43 +6,50 @@ import Banner from "@components/MediaDetail/Banner";
 import RelatedMediaList from "@components/MediaDetail/RelatedMediaList";
 import ActorList from "@components/MediaDetail/ActorList";
 import MovieInfomation from "@components/MediaDetail/MovieInfomation";
+import useFetch from "@hooks/useFetch";
 
 const MovieDetail = () => {
   const { id } = useParams();
-  const [movieInfo, setMovieInfo] = useState({});
+  // const [movieInfo, setMovieInfo] = useState({});
   const [relatedMovies, setRelatedMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isRelatedMovieListLoading, setIsRelatedMovieListLoading] =
     useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    // https://api.themoviedb.org/3/movie/{movie_id}
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}?append_to_response=release_dates,credits`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
-        },
-      },
-    )
-      .then(async (res) => {
-        const data = await res.json();
-        console.log({ data });
-        setMovieInfo(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [id]);
+  // lúc này mình sẽ không cần state movieInfo nữa và state isLoading mình chỉ cần gán biến movieInfo vào data và sử dụng isLoading ở bên useFetch trả về là được
+  const { data: movieInfo, isLoading } = useFetch({
+    url: `/movie/${id}?append_to_response=release_dates,credits`,
+    // method: 'GET' // method mặc định GET không cần truyền
+    // không cần overide lại headers nên cũng không truyền - tự lấy giá trị mặc định
+  });
 
-  // call tiếp api Recommendations: API này sẽ trả về các bộ phim có nội dung liên quan movie detail này
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   // https://api.themoviedb.org/3/movie/{movie_id}
+  //   fetch(
+  //     `https://api.themoviedb.org/3/movie/${id}?append_to_response=release_dates,credits`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         accept: "application/json",
+  //         Authorization:
+  //           "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
+  //       },
+  //     },
+  //   )
+  //     .then(async (res) => {
+  //       const data = await res.json();
+  //       console.log({ data });
+  //       setMovieInfo(data);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // }, [id]);
+
   useEffect(() => {
     setIsRelatedMovieListLoading(true);
     // https://api.themoviedb.org/3/movie/{movie_id}

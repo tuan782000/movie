@@ -54,6 +54,13 @@ const Banner = (props) => {
                 percent={Math.round((mediaInfo.vote_average || 0) * 10)}
                 strokeWidth={0.3}
                 size={3.5}
+                strokeColor={
+                  mediaInfo.vote_average >= 7
+                    ? "green"
+                    : mediaInfo.vote_average >= 5
+                      ? "orange"
+                      : "red"
+                }
               />
               Rating
             </div>
