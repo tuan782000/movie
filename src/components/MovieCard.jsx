@@ -1,5 +1,6 @@
 import CircularProgressBar from "@components/CircularProgressBar";
 import { Link } from "react-router-dom";
+import ImageComponent from "./Image";
 
 const MovieCard = (props) => {
   const { id, title, releaseDate, poster, point, mediaType } = props;
@@ -11,10 +12,16 @@ const MovieCard = (props) => {
             TV Show
           </p>
         )}
-        <img
+        {/* <img
           className="w-full rounded-lg"
           src={`https://image.tmdb.org/t/p/w500${poster}`}
           alt=""
+          width={210}
+          height={300}
+        /> */}
+        <ImageComponent
+          className={"w-full rounded-lg"}
+          src={`https://image.tmdb.org/t/p/w500${poster}`}
           width={210}
           height={300}
         />
@@ -56,4 +63,12 @@ ngoài ra mình phải đặt w-full cho ảnh lúc nào ảnh cũng chiếm h�
 bổ sung thuộc tính w-full cho ảnh
 
 và đặt width height cố định
+
+Mặc dù set width height - nhưng vẫn sẽ gặp vấn đề ảnh sẽ hiện từ từ lên
+
+Áp dụng thêm kỹ thuật blur loading
+
+Tạo Image Component - có blur áp dụng cho tất cả
+
+
 */

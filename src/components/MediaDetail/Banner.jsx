@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { groupBy } from "lodash";
 import CircularProgressBar from "@components/CircularProgressBar";
+import ImageComponent from "@components/Image";
 
 const Banner = (props) => {
   const { mediaInfo } = props;
@@ -24,7 +25,7 @@ const Banner = (props) => {
     <div className="relative overflow-hidden text-white shadow-sm shadow-slate-800">
       {/* Đây là background */}
       {/* inset-0: top-0 left-0 right-0 bottom-0 */}
-      <img
+      <ImageComponent
         className="absolute inset-0 w-full brightness-[.2]"
         src={`https://image.tmdb.org/t/p/original${mediaInfo.backdrop_path}`}
         alt=""
@@ -32,7 +33,7 @@ const Banner = (props) => {
       <div className="relative mx-auto flex max-w-screen-xl gap-6 px-6 py-8 sm:gap-8">
         {/* Đây là ảnh */}
         <div className="flex-1">
-          <img
+          <ImageComponent
             className="w-full"
             src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${mediaInfo.poster_path}`}
             alt=""
