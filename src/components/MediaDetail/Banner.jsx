@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CircularProgressBar from "../CircularProgressBar";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { groupBy } from "lodash";
+import CircularProgressBar from "@components/CircularProgressBar";
 
 const Banner = (props) => {
   const { mediaInfo } = props;
@@ -25,7 +25,7 @@ const Banner = (props) => {
       {/* Đây là background */}
       {/* inset-0: top-0 left-0 right-0 bottom-0 */}
       <img
-        className="absolute inset-0 brightness-[.2]"
+        className="absolute inset-0 w-full brightness-[.2]"
         src={`https://image.tmdb.org/t/p/original/${mediaInfo.backdrop_path}`}
         alt=""
       />

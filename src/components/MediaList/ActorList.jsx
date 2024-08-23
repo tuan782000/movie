@@ -1,5 +1,5 @@
+import ActorInfo from "@components/MediaDetail/ActorInfo";
 import { useState } from "react";
-import ActorInfo from "../MediaDetail/ActorInfo";
 
 const ActorList = (props) => {
   const { actors = [] } = props;

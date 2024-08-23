@@ -1,6 +1,6 @@
-import FeatureMovie from "../components/FeatureMovie";
-import MediaList from "../components/MediaList";
-import { TOP_RATED_TABS, TRENDING_TABS } from "../libs/constant";
+import FeatureMovie from "@components/FeatureMovie";
+import MediaList from "@components/MediaList";
+import { TOP_RATED_TABS, TRENDING_TABS } from "@libs/constant";
 
 // không cần Header nữa phần này RootLayout lo
 const App = () => {

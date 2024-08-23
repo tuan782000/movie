@@ -1,5 +1,5 @@
+import CircularProgressBar from "@components/CircularProgressBar";
 import { Link } from "react-router-dom";
-import CircularProgressBar from "../CircularProgressBar";
 
 const MovieCard = (props) => {
   const { id, title, releaseDate, poster, point, mediaType } = props;
