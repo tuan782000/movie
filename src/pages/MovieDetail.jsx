@@ -3,13 +3,16 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Loading from "@components/Loading";
 import Banner from "@components/MediaDetail/Banner";
-import ActorList from "@components/MediaList/ActorList";
 import RelatedMediaList from "@components/MediaDetail/RelatedMediaList";
+import ActorList from "@components/MediaDetail/ActorList";
 
 const MovieDetail = () => {
   const { id } = useParams();
   const [movieInfo, setMovieInfo] = useState({});
+  const [relatedMovies, setRelatedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRelatedMovieListLoading, setIsRelatedMovieListLoading] =
+    useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -38,7 +41,36 @@ const MovieDetail = () => {
       });
   }, [id]);
 
-  if (isLoading) {
+  // call tiếp api Recommendations: API này sẽ trả về các bộ phim có nội dung liên quan movie detail này
+  useEffect(() => {
+    setIsRelatedMovieListLoading(true);
+    // https://api.themoviedb.org/3/movie/{movie_id}
+    fetch(`https://api.themoviedb.org/3/movie/${id}/recommendations`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjhhOTRjNWJiMWE1MjMwN2I1ZGU5OWFkYzM3NTliNyIsIm5iZiI6MTcyNDEyNDIzNi45MzMyNzksInN1YiI6IjY2YzQwYjI2ZjVlZWU1ZjdlOTc1ZjY1ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NcBSvT1OZkbJ1qEOtPBkot8dVcyL-eSaLjWm0O-fR68",
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        console.log({ recommandation: data });
+        // setMovieInfo(data);
+        // api trả về có results nên tham chiếu - nếu không có thì mình sẽ mặc định gán array rỗng
+        const currentRelatedMovies = (data.results || []).slice(0, 12);
+
+        setRelatedMovies(currentRelatedMovies);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsRelatedMovieListLoading(false);
+      });
+  }, [id]);
+
+  if (isLoading || isRelatedMovieListLoading) {
     return <Loading />;
   }
 
@@ -50,7 +82,7 @@ const MovieDetail = () => {
           <div className="flex-[2]">
             <ActorList actors={movieInfo.credits?.cast || []} />
             {/* || [] đề phòng movieInfo.credits?.cast bị undefined thì nó sẽ thế vào là array rỗng chứ không trả về undefined */}
-            <RelatedMediaList />
+            <RelatedMediaList mediaList={relatedMovies} />
           </div>
           <div className="flex-1">
             <p className="mb-4 text-[1.4vw] font-bold">Information</p>
