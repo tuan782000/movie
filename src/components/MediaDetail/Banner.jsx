@@ -26,14 +26,15 @@ const Banner = (props) => {
       {/* inset-0: top-0 left-0 right-0 bottom-0 */}
       <img
         className="absolute inset-0 w-full brightness-[.2]"
-        src={`https://image.tmdb.org/t/p/original/${mediaInfo.backdrop_path}`}
+        src={`https://image.tmdb.org/t/p/original${mediaInfo.backdrop_path}`}
         alt=""
       />
       <div className="relative mx-auto flex max-w-screen-xl gap-6 px-6 py-8 sm:gap-8">
         {/* Đây là ảnh */}
         <div className="flex-1">
           <img
-            src={`https://image.tmdb.org/t/p/w500/${mediaInfo.poster_path}`}
+            className="w-full"
+            src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${mediaInfo.poster_path}`}
             alt=""
           />
         </div>

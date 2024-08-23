@@ -12,9 +12,11 @@ const MovieCard = (props) => {
           </p>
         )}
         <img
-          className="rounded-lg"
+          className="w-full rounded-lg"
           src={`https://image.tmdb.org/t/p/w500${poster}`}
           alt=""
+          width={210}
+          height={300}
         />
         <div className="relative -top-[1.5vw] px-4">
           <CircularProgressBar
@@ -39,4 +41,19 @@ mt-2 font-bold cách top 8px và in đậm
 text-slate-300: đổi màu
 
 absolute right-1 top-1 rounded bg-black text-sm font-bold text-white shadow-md: abosolute ăn theo relative cha - right 1 top 1 right 4px và top 4px rounded bo góc bg-black màu nền là đen text-sm thì small font-bold in đậm lên và màu trắng tex-white sau đó có shadow-md là box shadow
+*/
+
+/*
+Hiện tại là đang bị Cumulative Layout Shift (CLS)
+
+có nghĩa ảnh chưa load xong Image co lại - load xong ảnh nở ra
+
+để giải quyết vấn đề này mình nên đặt cho nó 1 width và height cố định - để đặt chỗ trước cho ảnh trước khi load xong - sau khi load xong nó sẽ không bị nở ra gây cho người dùng UX không tốt
+
+ngoài ra mình phải đặt w-full cho ảnh lúc nào ảnh cũng chiếm hết chiều ngang được đặt
+
+---
+bổ sung thuộc tính w-full cho ảnh
+
+và đặt width height cố định
 */
