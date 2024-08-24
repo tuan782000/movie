@@ -36,7 +36,7 @@ const Banner = (props) => {
       {/* Đây là background */}
       {/* inset-0: top-0 left-0 right-0 bottom-0 */}
       <ImageComponent
-        className="absolute inset-0 w-full brightness-[.2]"
+        className="absolute inset-0 aspect-video w-full brightness-[.2]"
         src={`https://image.tmdb.org/t/p/original${backdropPath}`}
         alt=""
       />

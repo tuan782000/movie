@@ -14,14 +14,12 @@ const TvShowDetail = () => {
     url: `/tv/${id}?append_to_response=content_ratings,aggregate_credits`,
   });
 
-  const {
-    data: recommandationsResponse,
-    isLoading: isRelatedMovieListLoading,
-  } = useFetch({
-    url: `/tv/${id}/recommendations`,
-  });
+  const { data: recommandationsResponse, isLoading: isRecommandationLoading } =
+    useFetch({
+      url: `/tv/${id}/recommendations`,
+    });
 
-  const relatedMovies = recommandationsResponse.results || [];
+  const relatedTVShow = recommandationsResponse.results || [];
 
   const certification = (tvInfo.content_ratings?.results || []).find(
     (result) => result.iso_3166_1 === "US",
@@ -33,6 +31,7 @@ const TvShowDetail = () => {
       const jobs = (crew.jobs || []).map((j) => j.job);
       return ["Director", "Writer"].some((job) => jobs.find((j) => j === job));
     })
+    .slice(0, 5)
     .map((crew) => ({ id: crew.id, job: crew.jobs[0].job, name: crew.name }));
   // console.log({ crews });
 
@@ -65,8 +64,8 @@ const TvShowDetail = () => {
             />
             {/* || [] đề phòng movieInfo.credits?.cast bị undefined thì nó sẽ thế vào là array rỗng chứ không trả về undefined */}
             <RelatedMediaList
-              mediaList={relatedMovies}
-              isLoading={isRelatedMovieListLoading}
+              mediaList={relatedTVShow}
+              isLoading={isRecommandationLoading}
             />
           </div>
           <div className="flex-1">
