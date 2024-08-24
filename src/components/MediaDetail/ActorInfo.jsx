@@ -1,7 +1,7 @@
 import ImageComponent from "@components/Image";
 
 const ActorInfo = (props) => {
-  const { id, name, character, profilePath } = props;
+  const { id, name, character, profilePath, episodeCount } = props;
   console.log(id);
   return (
     <div className="rounded-lg border border-slate-300 bg-black shadow-sm">
@@ -29,7 +29,9 @@ const ActorInfo = (props) => {
       <div className="p-3">
         <p className="font-bold">{name}</p>
         <p>{character}</p>
-        {/* <p>18</p> */}
+        <p>
+          {episodeCount} {episodeCount === 1 ? "Episode" : "Episodes"}
+        </p>
       </div>
     </div>
   );

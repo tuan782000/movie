@@ -1,6 +1,5 @@
+// Tái sử dụng lại TvShowDetail
 import { useParams } from "react-router-dom";
-// import { useEffect } from "react";
-// import { useState } from "react";
 import Loading from "@components/Loading";
 import Banner from "@components/MediaDetail/Banner";
 import RelatedMediaList from "@components/MediaDetail/RelatedMediaList";
@@ -8,31 +7,34 @@ import ActorList from "@components/MediaDetail/ActorList";
 import MovieInfomation from "@components/MediaDetail/MovieInfomation";
 import useFetch from "@hooks/useFetch";
 
-const MovieDetail = () => {
+const TvShowDetail = () => {
   const { id } = useParams();
 
-  const { data: movieInfo, isLoading } = useFetch({
-    url: `/movie/${id}?append_to_response=release_dates,credits`,
+  const { data: tvInfo, isLoading } = useFetch({
+    url: `/tv/${id}?append_to_response=content_ratings,aggregate_credits`,
   });
 
   const {
     data: recommandationsResponse,
     isLoading: isRelatedMovieListLoading,
   } = useFetch({
-    url: `/movie/${id}/recommendations`,
+    url: `/tv/${id}/recommendations`,
   });
 
   const relatedMovies = recommandationsResponse.results || [];
 
-  const certification = (
-    (movieInfo.release_dates?.results || []).find(
-      (result) => result.iso_3166_1 === "US",
-    )?.release_dates || []
-  ).find((releaseDate) => releaseDate.certification)?.certification;
+  const certification = (tvInfo.content_ratings?.results || []).find(
+    (result) => result.iso_3166_1 === "US",
+  )?.rating;
 
-  const crews = (movieInfo.credits?.crew || [])
-    .filter((crew) => ["Director", "Screenplay", "Writer"].includes(crew.job))
-    .map((crew) => ({ id: crew.id, job: crew.job, name: crew.name }));
+  // vì này nội tại trả về array nên phải làm phức tạp hơn
+  const crews = (tvInfo.aggregate_credits?.crew || [])
+    .filter((crew) => {
+      const jobs = (crew.jobs || []).map((j) => j.job);
+      return ["Director", "Writer"].some((job) => jobs.find((j) => j === job));
+    })
+    .map((crew) => ({ id: crew.id, job: crew.jobs[0].job, name: crew.name }));
+  // console.log({ crews });
 
   if (isLoading) {
     return <Loading />;
@@ -41,20 +43,26 @@ const MovieDetail = () => {
   return (
     <div>
       <Banner
-        title={movieInfo.title}
-        backdropPath={movieInfo.backdrop_path}
-        posterPath={movieInfo.poster_path}
-        releaseDate={movieInfo.release_date}
-        genres={movieInfo.genres}
-        point={movieInfo.vote_average}
-        overview={movieInfo.overview}
+        title={tvInfo.title}
+        backdropPath={tvInfo.backdrop_path}
+        posterPath={tvInfo.poster_path}
+        releaseDate={tvInfo.first_air_date}
+        genres={tvInfo.genres}
+        point={tvInfo.vote_average}
+        overview={tvInfo.overview}
         certification={certification}
         crews={crews}
       />
       <div className="bg-black text-[1.2vw] text-white">
         <div className="mx-auto flex max-w-screen-xl gap-6 px-6 py-10 sm:gap-8">
           <div className="flex-[2]">
-            <ActorList actors={movieInfo.credits?.cast || []} />
+            <ActorList
+              actors={(tvInfo.aggregate_credits?.cast || []).map((cast) => ({
+                ...cast,
+                character: cast.roles[0]?.character,
+                episodeCount: cast.roles[0]?.episode_count,
+              }))}
+            />
             {/* || [] đề phòng movieInfo.credits?.cast bị undefined thì nó sẽ thế vào là array rỗng chứ không trả về undefined */}
             <RelatedMediaList
               mediaList={relatedMovies}
@@ -63,11 +71,11 @@ const MovieDetail = () => {
           </div>
           <div className="flex-1">
             {/* <p className="mb-4 text-[1.4vw] font-bold">Information</p> */}
-            <MovieInfomation movieInfo={movieInfo} />
+            <MovieInfomation movieInfo={tvInfo} />
           </div>
         </div>
       </div>
     </div>
   );
 };
-export default MovieDetail;
+export default TvShowDetail;

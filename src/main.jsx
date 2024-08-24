@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 // import App from "./pages/HomePage.jsx";
 import "./index.css";
@@ -6,6 +5,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "@pages/HomePage";
 import MovieDetail from "@pages/MovieDetail";
 import RootLayout from "@pages/RootLayout";
+import TvShowDetail from "@pages/TvShowDetail";
 
 // sử dụng method createBrowserRouter của react-router-dom gán vào bên trong router
 // Định nghĩa bên trong là 1 array
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/movie/:id",
         element: <MovieDetail />,
+      },
+      {
+        path: "/tv/:id",
+        element: <TvShowDetail />,
       },
     ],
   },
@@ -40,10 +44,7 @@ const router = createBrowserRouter([
 // router này nó giống như 1 contextAPI - và router nó là props truyền router đã tạo ở trên và thế là dùng được
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-    {/* <App /> */}
-  </StrictMode>,
+  <RouterProvider router={router} />,
 );
 
 // Bây giờ là mỗi cái movie muốn nhấn vào thì router phải di chuyển kèm id
